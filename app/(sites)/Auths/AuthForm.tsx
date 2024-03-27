@@ -72,7 +72,7 @@ export default function AuthForm() {
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md ">
       <div
         className="
-        bg-white-100
+          bg-white-100
           px-4
           py-4
           shadow-xl
@@ -93,15 +93,15 @@ export default function AuthForm() {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-bold text-base">Name</FormLabel>
+                      <FormLabel className="font-bold">Name</FormLabel>
                       <FormControl>
                         <Input
                           type="text"
                           {...field}
                         />
                       </FormControl>
-                      <FormDescription></FormDescription>
-                      <FormMessage />
+
+                      <FormMessage className="form-message" />
                     </FormItem>
                   )}
                 />
@@ -119,7 +119,7 @@ export default function AuthForm() {
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="form-message" />
                 </FormItem>
               )}
             />
@@ -136,7 +136,7 @@ export default function AuthForm() {
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="form-message" />
                 </FormItem>
               )}
             />
