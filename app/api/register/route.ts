@@ -7,6 +7,9 @@ import { NextResponse } from 'next/server';
  * @param request - The request object.
  * @returns The response object.
  */
+
+//当你通过 Axios 发送一个 POST 请求到 '/api/register'，服务器就会调用这个函数来处理请求，然后返回响应。
+
 // 导出一个异步函数，处理 POST 请求
 export async function POST(request: Request) {
   try {

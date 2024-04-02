@@ -14,6 +14,7 @@ import { BsGithub, BsGoogle } from 'react-icons/bs';
 // import { toast } from 'react-hot-toast';
 // import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 type Variant = 'LOGIN' | 'REGISTER';
 
@@ -54,12 +55,12 @@ export default function AuthForm() {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(data: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     setIsLoading(true);
     if (variant === 'REGISTER') {
-      // register
+      axios.post('/api/register', data);
     }
     if (variant === 'LOGIN') {
       // login
