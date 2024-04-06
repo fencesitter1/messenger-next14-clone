@@ -68,7 +68,12 @@ export default function AuthForm() {
     // ✅ This will be type-safe and validated.
     setisLoading(true);
     if (variant === 'REGISTER') {
-      axios.post('/api/register', data);
+      // register
+      axios
+        .post('/api/register', data)
+        .then(() => signIn('credentials', data))
+        .catch(() => toast.error('Something went wrong'))
+        .finally(() => setisLoading(false));
     }
     if (variant === 'LOGIN') {
       // login
