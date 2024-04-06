@@ -19,11 +19,17 @@ import axios from 'axios';
 type Variant = 'LOGIN' | 'REGISTER';
 
 export default function AuthForm() {
-  // const session = useSession();
+  const session = useSession();
   const router = useRouter();
   const [variant, setVariant] = useState<Variant>('REGISTER');
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    if (session?.status === 'authenticated') {
+      toast.success('authenticated');
+      console.log('authenticated');
+    }
+  }, [session?.status]);
   const toggleVariant = useCallback(() => {
     if (variant === 'LOGIN') {
       setVariant('REGISTER');
@@ -105,7 +111,6 @@ export default function AuthForm() {
 
   const socialAction = (action: string) => {
     setIsLoading(true);
-
     signIn(action, { redirect: false })
       .then((callback) => {
         if (callback?.error) {
