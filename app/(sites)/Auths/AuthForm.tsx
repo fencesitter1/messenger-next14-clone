@@ -19,18 +19,9 @@ import axios from 'axios';
 type Variant = 'LOGIN' | 'REGISTER';
 
 export default function AuthForm() {
-  const session = useSession();
   const router = useRouter();
   const [variant, setVariant] = useState<Variant>('REGISTER');
   const [isLoading, setisLoading] = useState(false);
-
-  useEffect(() => {
-    //使用useEffect hook来监听用户的会话状态，如果用户已经通过身份验证，将重定向到"/users"页面。
-    if (session?.status === 'authenticated') {
-      // router.push("/users");
-      console.log('session', session);
-    }
-  }, [session?.status]);
 
   const toggleVariant = useCallback(() => {
     if (variant === 'LOGIN') {
