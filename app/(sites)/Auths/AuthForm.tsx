@@ -11,8 +11,8 @@ import { Input } from '@/components/ui/input';
 import { useEffect, useCallback, useState } from 'react';
 import { FieldValues, SubmitHandler, set, useForm } from 'react-hook-form';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
-// import { toast } from 'react-hot-toast';
-// import { useSession, signIn } from 'next-auth/react';
+import { toast } from 'react-hot-toast';
+import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
@@ -33,14 +33,14 @@ export default function AuthForm() {
   }, [variant]);
 
   const formSchema = z.object({
-    name: z.string().min(5, {
+    name: z.string().min(3, {
       message: 'Name must be at least 3 characters long',
     }),
     email: z.string().email({
       message: 'Invalid email',
     }),
-    password: z.string().min(6, {
-      message: 'Password must be at least 6 characters long',
+    password: z.string().min(5, {
+      message: 'Password must be at least 5 characters long',
     }),
   });
 
@@ -59,15 +59,66 @@ export default function AuthForm() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     setIsLoading(true);
+    console.log(variant);
     if (variant === 'REGISTER') {
-      axios.post('/api/register', data);
+      axios
+        .post('/api/register', data)
+        .then(() =>
+          signIn('credentials', {
+            ...data,
+            // redirect: false,
+            callbackUrl: '/',
+          })
+        )
+        .then((callback) => {
+          if (callback?.error) {
+            toast.error('Invalid credentials!');
+          }
+
+          if (callback?.ok && !callback?.error) {
+            toast.success('Logged in!');
+          }
+        })
+        .catch(() => toast.error('Something went wrong!'))
+        .finally(() => setIsLoading(false));
     }
+
     if (variant === 'LOGIN') {
-      // login
+      console.log(variant);
+      signIn('credentials', {
+        ...data,
+        redirect: false,
+      })
+        .then((callback) => {
+          if (callback?.error) {
+            toast.error('Invalid credentials!');
+          }
+
+          if (callback?.ok && !callback?.error) {
+            toast.success('Logged in!');
+            // router.push('/users');
+          }
+        })
+        .finally(() => setIsLoading(false));
     }
   }
 
-  const socialAction = (action: string) => {};
+  const socialAction = (action: string) => {
+    setIsLoading(true);
+
+    signIn(action, { redirect: false })
+      .then((callback) => {
+        if (callback?.error) {
+          toast.error('Invalid credentials!');
+        }
+
+        if (callback?.ok && !callback?.error) {
+          toast.success('Logged in!');
+          // router.push('/users');
+        }
+      })
+      .finally(() => setIsLoading(false));
+  };
 
   return (
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md ">
@@ -87,27 +138,26 @@ export default function AuthForm() {
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-5 w-full mt-4 "
           >
-            {variant === 'REGISTER' && (
-              <div>
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-bold">Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="text"
-                          {...field}
-                        />
-                      </FormControl>
+            <div>
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-bold">Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        {...field}
+                      />
+                    </FormControl>
 
-                      <FormMessage className="form-message" />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            )}
+                    <FormMessage className="form-message" />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <FormField
               control={form.control}
               name="email"
