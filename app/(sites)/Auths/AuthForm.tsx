@@ -11,25 +11,19 @@ import { Input } from '@/components/ui/input';
 import { useEffect, useCallback, useState } from 'react';
 import { FieldValues, SubmitHandler, set, useForm } from 'react-hook-form';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
-import { useSession, signIn } from 'next-auth/react';
+// import { toast } from 'react-hot-toast';
+// import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import { Toaster, toast } from 'react-hot-toast';
 
 type Variant = 'LOGIN' | 'REGISTER';
 
 export default function AuthForm() {
-  const session = useSession();
+  // const session = useSession();
   const router = useRouter();
   const [variant, setVariant] = useState<Variant>('REGISTER');
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    if (session?.status === 'authenticated') {
-      console.log('Authenticated');
-      console.log(session);
-    }
-  }, [session?.status]);
   const toggleVariant = useCallback(() => {
     if (variant === 'LOGIN') {
       setVariant('REGISTER');
@@ -39,18 +33,15 @@ export default function AuthForm() {
   }, [variant]);
 
   const formSchema = z.object({
-    // name: z.string().min(2, {
-    //   message: 'Name must be at least 2 characters long',
-    // }),
-    // email: z.string().email({
-    //   message: 'Invalid email',
-    // }),
-    // password: z.string().min(6, {
-    //   message: 'Password must be at least 6 characters long',
-    // }),
-    name: z.string(),
-    email: z.string(),
-    password: z.string(),
+    name: z.string().min(5, {
+      message: 'Name must be at least 3 characters long',
+    }),
+    email: z.string().email({
+      message: 'Invalid email',
+    }),
+    password: z.string().min(6, {
+      message: 'Password must be at least 6 characters long',
+    }),
   });
 
   // 1. Define your form.
@@ -68,48 +59,15 @@ export default function AuthForm() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     setIsLoading(true);
-    console.log(variant);
     if (variant === 'REGISTER') {
-      // register
-      axios
-        .post('/api/register', data)
-        .catch(() => toast.error('Something went wrong'))
-        .finally(() => setIsLoading(false));
+      axios.post('/api/register', data);
     }
-
     if (variant === 'LOGIN') {
-      signIn('credentials', {
-        ...data,
-        redirect: false,
-      })
-        .then((callback) => {
-          if (callback?.error) {
-            toast.error('Invalid credentials');
-          }
-
-          if (callback?.ok && !callback?.error) {
-            toast.success('Logged in!');
-          }
-        })
-        .finally(() => setIsLoading(false));
+      // login
     }
   }
 
-  const socialAction = (action: string) => {
-    setIsLoading(true);
-    signIn(action, {
-      redirect: false,
-    })
-      .then((callback) => {
-        if (callback?.error) {
-          toast.error('Something went wrong');
-        }
-        if (callback?.ok && !callback?.error) {
-          toast.success('Logged in!');
-        }
-      })
-      .finally(() => setIsLoading(false));
-  };
+  const socialAction = (action: string) => {};
 
   return (
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md ">
