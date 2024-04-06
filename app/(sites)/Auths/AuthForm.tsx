@@ -9,20 +9,28 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 
 import { useEffect, useCallback, useState } from 'react';
-import { FieldValues, SubmitHandler, set, useForm } from 'react-hook-form';
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
-// import { toast } from 'react-hot-toast';
-// import { useSession, signIn } from 'next-auth/react';
+import { toast } from 'react-hot-toast';
+import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
 type Variant = 'LOGIN' | 'REGISTER';
 
 export default function AuthForm() {
-  // const session = useSession();
+  const session = useSession();
   const router = useRouter();
   const [variant, setVariant] = useState<Variant>('REGISTER');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setisLoading] = useState(false);
+
+  useEffect(() => {
+    //使用useEffect hook来监听用户的会话状态，如果用户已经通过身份验证，将重定向到"/users"页面。
+    if (session?.status === 'authenticated') {
+      // router.push("/users");
+      console.log('session', session);
+    }
+  }, [session?.status]);
 
   const toggleVariant = useCallback(() => {
     if (variant === 'LOGIN') {
@@ -58,16 +66,45 @@ export default function AuthForm() {
   function onSubmit(data: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    setIsLoading(true);
+    setisLoading(true);
     if (variant === 'REGISTER') {
       axios.post('/api/register', data);
     }
     if (variant === 'LOGIN') {
       // login
+      signIn('credentials', {
+        ...data,
+        redirect: false,
+      })
+        .then((callback) => {
+          if (callback?.error) {
+            toast.error('Invalid credentials');
+          }
+
+          if (callback?.ok && !callback?.error) {
+            toast.success('Logged in!');
+            router.push('/users');
+          }
+        })
+        .finally(() => setisLoading(false));
     }
   }
 
-  const socialAction = (action: string) => {};
+  const socialAction = (action: string) => {
+    // social login
+    setisLoading(true);
+    signIn(action, { redirect: false })
+      .then((callback) => {
+        if (callback?.error) {
+          toast.error('Invalid credentials');
+        }
+
+        if (callback?.ok && !callback?.error) {
+          toast.success('Logged in!');
+        }
+      })
+      .finally(() => setisLoading(false));
+  };
 
   return (
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md ">
