@@ -27,9 +27,9 @@ export default function AuthForm() {
   useEffect(() => {
     if (session?.status === 'authenticated') {
       toast.success('authenticated');
-      console.log('authenticated');
+      router.push('/users'); // Redirect to /users
     }
-  }, [session?.status]);
+  }, [session?.status, router]);
   const toggleVariant = useCallback(() => {
     if (variant === 'LOGIN') {
       setVariant('REGISTER');
@@ -69,22 +69,7 @@ export default function AuthForm() {
     if (variant === 'REGISTER') {
       axios
         .post('/api/register', data)
-        .then(() =>
-          signIn('credentials', {
-            ...data,
-            // redirect: false,
-            callbackUrl: '/',
-          })
-        )
-        .then((callback) => {
-          if (callback?.error) {
-            toast.error('Invalid credentials!');
-          }
-
-          if (callback?.ok && !callback?.error) {
-            toast.success('Logged in!');
-          }
-        })
+        .then(() => signIn('credentials', data))
         .catch(() => toast.error('Something went wrong!'))
         .finally(() => setIsLoading(false));
     }
@@ -102,7 +87,7 @@ export default function AuthForm() {
 
           if (callback?.ok && !callback?.error) {
             toast.success('Logged in!');
-            // router.push('/users');
+            router.push('/users');
           }
         })
         .finally(() => setIsLoading(false));
