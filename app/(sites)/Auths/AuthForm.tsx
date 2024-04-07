@@ -13,8 +13,6 @@ import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
 import { toast } from 'react-hot-toast';
 import { useSession, signIn } from 'next-auth/react';
-import { toast } from 'react-hot-toast';
-import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
