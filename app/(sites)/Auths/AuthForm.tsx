@@ -9,8 +9,10 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 
 import { useEffect, useCallback, useState } from 'react';
-import { FieldValues, SubmitHandler, set, useForm } from 'react-hook-form';
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { BsGithub, BsGoogle } from 'react-icons/bs';
+import { toast } from 'react-hot-toast';
+import { useSession, signIn } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
 import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -20,6 +22,7 @@ type Variant = 'LOGIN' | 'REGISTER';
 
 export default function AuthForm() {
   const session = useSession();
+
   const router = useRouter();
   const [variant, setVariant] = useState<Variant>('REGISTER');
   const [isLoading, setIsLoading] = useState(false);
@@ -76,6 +79,7 @@ export default function AuthForm() {
 
     if (variant === 'LOGIN') {
       console.log(variant);
+
       signIn('credentials', {
         ...data,
         redirect: false,
@@ -104,6 +108,7 @@ export default function AuthForm() {
 
         if (callback?.ok && !callback?.error) {
           toast.success('Logged in!');
+
           // router.push('/users');
         }
       })
