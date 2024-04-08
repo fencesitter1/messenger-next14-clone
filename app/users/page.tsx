@@ -6,7 +6,7 @@ import { signOut } from 'next-auth/react';
 
 const Users = () => {
   return (
-    <div className="hidden lg:block lg:pl-80 h-full">
+    <div className="userpage hidden lg:block lg:pl-80 h-full">
       <EmptyState />
       {/* <Button onClick={() => signOut()}>logout</Button> */}
     </div>

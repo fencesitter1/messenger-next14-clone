@@ -15,6 +15,7 @@ const MobileFooter = () => {
   return (
     <div
       className="
+      MobileFooter
         fixed 
         justify-between 
         w-full 
