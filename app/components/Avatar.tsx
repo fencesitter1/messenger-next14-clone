@@ -30,6 +30,7 @@ const Avatar: React.FC<AvatarProps> = ({ user }) => {
       >
         <Image
           fill
+          sizes="100vw,100vw"
           src={user?.image || '/images/placeholder.jpg'}
           alt="Avatar"
         />

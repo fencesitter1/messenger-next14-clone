@@ -1,17 +1,20 @@
 // import getUsers from '../actions/getUsers';
 
-import DesktopSidebar from '@/components/sidebar/DesktopSidebar';
-import Sidebar from '@/components/sidebar/Sidebar';
+import DesktopSidebar from '@/app/components/sidebar/DesktopSidebar';
+import Sidebar from '@/app/components/sidebar/Sidebar';
+import getUsers from '../actions/getUsers';
+import UserList from './components/UserList';
 
 // import UserList from './components/UserList';
 
 export default async function UsersLayout({ children }: { children: React.ReactNode }) {
-  // const users = await getUsers();
+  const users = await getUsers();
 
   return (
     <Sidebar>
       <div className="userlayout h-full">
-        <main className="lg:pl-21 h-full">{children}</main>
+        <UserList items={users} />
+        {children}
       </div>
     </Sidebar>
   );
